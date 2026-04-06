@@ -428,7 +428,13 @@
         }
       }
 
+      function stopBackgroundMusicForVideo() {
+        bgMusic.pause();
+        bgMusic.currentTime = 0;
+      }
+
       ensureBackgroundMusic();
+      finalVideo.addEventListener("play", stopBackgroundMusicForVideo);
 
       // Generate Magical Elements
       function createMagicGarden() {
@@ -611,6 +617,7 @@
         videoScreen.style.opacity = "1";
 
         // Play video
+        stopBackgroundMusicForVideo();
         enforceVideoVolume();
         finalVideo.play();
       }
