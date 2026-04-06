@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en" style="color-scheme: light;">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light only">
+  <meta name="darkreader-lock">
+  <title>Kunal.Dev | Sunset Garden</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Font Awesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Original stylesheet -->
+  <link rel="stylesheet" href="./style.css">
+
+  <style>
+    /* ----- General Reset & Dark Mode Protection ----- */
+    :root {
+      color-scheme: light only !important;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    html, body {
+      background-color: #000000 !important; /* Pure black base for first screen */
+      color: #ffffff !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      html, body {
+        filter: none !important;
+      }
+    }
+
+    /* ----- Centered Glassmorphism Form ----- */
+    #glass-container {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      display: flex; justify-content: center; align-items: center;
+      z-index: 50;
+    }
+
+    #volume-note {
+      position: absolute;
+      top: 156px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.78rem;
+      letter-spacing: 0.5px;
+      color: rgba(255, 255, 255, 0.85) !important;
+      text-align: center;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6);
+      pointer-events: none;
+      padding: 0 14px;
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 24px;
+      padding: 3.5rem 3rem;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), inset 0 0 20px rgba(255,255,255,0.1);
+      width: 90%;
+      max-width: 420px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .glass-card h2 {
+      color: #ffffff !important; font-size: 2.2rem; margin-bottom: 1.5rem; font-weight: 600;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+
+    /* Responsive Media Queries */
+    @media (max-width: 600px) {
+      .glass-card {
+        padding: 2.5rem 1.5rem;
+      }
+      .glass-card h2 {
+        font-size: 1.8rem;
+      }
+      .sun {
+        top: 20%; right: 10%;
+        width: 60px; height: 60px;
+      }
+    }
+
+    .input-group { position: relative; margin-bottom: 2rem; }
+    .input-group i {
+      position: absolute; left: 1.2rem; top: 50%; transform: translateY(-50%);
+      color: rgba(255,255,255,0.9) !important;
+    }
+
+    #user-name {
+      width: 100%;
+      padding: 1.2rem 1.2rem 1.2rem 3.5rem;
+      background: rgba(255, 255, 255, 0.15) !important;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: 14px;
+      color: #ffffff !important;
+      font-size: 1.05rem;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    #user-name::placeholder { color: rgba(255,255,255,0.7) !important; }
+    #user-name:focus { 
+      border-color: rgba(255, 255, 255, 1); 
+      background: rgba(255, 255, 255, 0.25) !important; 
+      box-shadow: 0 0 15px rgba(255,255,255,0.3);
+    }
+
+    #submit-btn {
+      width: 100%;
+      padding: 1.2rem;
+      background: #ffffff !important;
+      color: #1a1a2e !important;
+      border: none;
+      border-radius: 14px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 15px rgba(255,255,255,0.2);
+    }
+
+    #submit-btn:hover { 
+      transform: translateY(-3px) scale(1.02); 
+      box-shadow: 0 10px 25px rgba(255,255,255,0.4); 
+    }
+
+    /* ----- Transitions & Screens ----- */
+    #white-light {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background-color: #ffffff !important;
+      opacity: 0; pointer-events: none; z-index: 9999;
+      transition: opacity 2.5s ease-in-out;
+    }
+
+    #garden-screen, #video-screen {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      display: none; opacity: 0; z-index: 100;
+      transition: opacity 2s ease-in-out;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow: hidden;
+    }
+
+    /* ======================================================== */
+    /* ENCHANTED SUNSET GARDEN & SNOW                           */
+    /* ======================================================== */
+    
+    #garden-screen {
+      /* Deep Cinematic Sunset Gradient */
+      background: linear-gradient(180deg, #0F1123 0%, #4A1C40 25%, #BA4C65 50%, #E37B58 75%, #F5D57B 100%) !important;
+    }
+
+    /* Beautiful Setting Sun */
+    .sun {
+      position: absolute;
+      top: 25%; right: 20%;
+      width: 75px; height: 75px;
+      background: #ffffff;
+      border-radius: 50%;
+      box-shadow: 0 0 30px #ffffff,
+                  0 0 80px 30px rgba(255, 220, 100, 0.9), 
+                  0 0 160px 60px rgba(255, 100, 0, 0.7), 
+                  0 0 350px 120px rgba(200, 40, 0, 0.4);
+      z-index: 1;
+      animation: sunGlow 5s infinite alternate ease-in-out;
+    }
+
+    @keyframes sunGlow {
+      0% { filter: brightness(1); transform: scale(1); }
+      100% { filter: brightness(1.15); transform: scale(1.05); }
+    }
+
+    /* Smooth Vector Dunes - Desert Sunset */
+    .hills-container {
+      position: absolute; bottom: 0; left: 0; width: 100vw; height: 45vh; z-index: 2;
+      filter: drop-shadow(0 -15px 35px rgba(245, 213, 123, 0.3)); /* Warm desert sunset glow */
+    }
+    
+    .hill-svg {
+      position: absolute; left: 0; width: 100vw; height: auto;
+      transform: scaleY(1.1); /* Stretch slightly to look more like sweeping dunes */
+      transform-origin: bottom;
+    }
+
+    /* Realistic Desert Sand Colors */
+    .hill-1 { fill: #D97A48 !important; opacity: 1; bottom: 16vh; }
+    .hill-2 { fill: #9E4321 !important; opacity: 1; bottom: 7vh; }
+    .hill-3 { fill: #4F1A0C !important; opacity: 1; bottom: -3vh; }
+
+    /* Falling Snow */
+    #snow-container, #fireflies-container {
+      position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
+      z-index: 3; pointer-events: none; overflow: hidden;
+    }
+
+    .snowflake {
+      position: absolute;
+      top: -10%;
+      background: #ffffff !important;
+      border-radius: 50%;
+      opacity: 0.8;
+      box-shadow: 0 0 12px rgba(255, 240, 245, 0.9);
+      animation: fall linear infinite;
+    }
+
+    @keyframes fall {
+      0% { transform: translateY(0) translateX(0) scale(1) rotate(0deg); }
+      50% { transform: translateY(60vh) translateX(50px) scale(1.1) rotate(180deg); }
+      100% { transform: translateY(115vh) translateX(-40px) scale(1) rotate(360deg); }
+    }
+
+    /* Beautiful Butterflies */
+    #butterflies-container {
+      position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
+      z-index: 4; pointer-events: none; overflow: hidden;
+    }
+
+    .butterfly-box {
+      position: absolute;
+      width: 25px; height: 25px;
+      opacity: 0.9;
+    }
+
+    .wing {
+      position: absolute;
+      width: 12px; height: 22px;
+      /* Background is now applied dynamically via JS for random colors */
+      border-radius: 50% 50% 0 50%;
+      transform-origin: right center;
+      animation: flap 0.12s infinite alternate ease-in-out;
+    }
+
+    .wing.right {
+      left: 12px;
+      border-radius: 50% 50% 50% 0;
+      transform-origin: left center;
+      animation: flap-right 0.12s infinite alternate ease-in-out;
+    }
+
+    @keyframes flap {
+      0% { transform: rotateY(0deg) rotateZ(20deg); }
+      100% { transform: rotateY(75deg) rotateZ(20deg); }
+    }
+    @keyframes flap-right {
+      0% { transform: rotateY(0deg) rotateZ(-20deg); }
+      100% { transform: rotateY(-75deg) rotateZ(-20deg); }
+    }
+
+    /* ======================================================== */
+    /* Beautiful Content Overlay                                */
+    /* ======================================================== */
+    .garden-content {
+      position: relative;
+      z-index: 10;
+      width: 100%; height: 100%;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      text-align: center; color: #ffffff !important;
+      padding: 0 20px;
+    }
+
+    #greeting {
+      font-size: clamp(1.5rem, 5vw, 2.5rem); /* Responsive, smaller size */
+      font-weight: 500; margin-bottom: 1rem;
+      color: #FFDFB0 !important;
+      text-shadow: 0 2px 15px rgba(0,0,0,0.9), 0 0 30px rgba(255, 120, 0, 0.6);
+      letter-spacing: 2px;
+      transform: translateY(20px); opacity: 0;
+      transition: opacity 1.5s ease-out, transform 1.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    /* Elegant Thin Timer */
+    .timer-container {
+      font-size: clamp(4rem, 15vw, 6rem); /* Responsive, smaller size */
+      font-weight: 300;
+      color: #ffffff !important;
+      text-shadow: 0 0 25px rgba(255, 100, 0, 0.9), 0 0 60px rgba(255, 255, 255, 0.6);
+      line-height: 1;
+      transition: all 0.5s;
+    }
+
+    .slow-pulse {
+      animation: slowHeartbeat 3s infinite ease-in-out;
+      color: #FFD700 !important;
+      text-shadow: 0 0 40px rgba(255, 100, 0, 1), 0 0 80px rgba(255, 255, 255, 0.9);
+    }
+
+    @keyframes slowHeartbeat {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+      100% { transform: scale(1); }
+    }
+
+    #video-screen { background-color: #000 !important; }
+    #final-video { width: 100%; height: 100%; object-fit: contain; }
+  </style>
+
+</head>
+
+<body>
+  <!-- Bubbles (Original Background retained for Page 1) -->
+  <div class="bubble-wrapper">
+    <img src="./assets/whitebubble.png" alt="bubble" class="bubble" onerror="this.style.display='none'">
+    <img src="./assets/whitebubble2.png" alt="bubble" class="bubble1" onerror="this.style.display='none'">
+    <img src="./assets/whitebubble.png" alt="bubble" class="bubble2" onerror="this.style.display='none'">
+    <img src="./assets/whitebubble2.png" alt="bubble" class="bubble3" onerror="this.style.display='none'">
+    <img src="./assets/whitebubble2.png" alt="bubble" class="bubble4" onerror="this.style.display='none'">
+  </div>
+
+  <audio id="bg-music" autoplay loop preload="auto">
+    <source src="./assets/laststop.mp3" type="audio/mp3">
+  </audio>
+  
+  <script src="./script.js"></script>
+
+  <!-- 1. Center Name Input Div -->
+  <div id="glass-container">
+    <div id="volume-note">For the best experience, keep your device volume at maximum.</div>
+    <form class="glass-card" id="name-form">
+      <h2>Welcome</h2>
+      <div class="input-group">
+        <i class="fa-solid fa-user"></i>
+        <input type="text" id="user-name" placeholder="Enter your name" required autocomplete="off">
+      </div>
+      <button type="submit" id="submit-btn">Let's Go</button>
+    </form>
+  </div>
+
+  <!-- 2. White Light Flash Overlay -->
+  <div id="white-light"></div>
+
+  <!-- 3. Enchanted Sunset Garden Screen -->
+  <div id="garden-screen">
+    
+    <!-- Glowing Sun -->
+    <div class="sun"></div>
+
+    <!-- Smooth Vector Hills Layers -->
+    <div class="hills-container">
+      <svg class="hill-svg hill-1" viewBox="0 0 1440 320" preserveAspectRatio="none">
+        <path d="M0,224L80,213.3C160,203,320,181,480,186.7C640,192,800,224,960,218.7C1120,213,1280,171,1360,149.3L1440,128L1440,320L1360,320C1280,320,1120,320,960,320C800,320,640,320,480,320C320,320,160,320,80,320L0,320Z"></path>
+      </svg>
+      <svg class="hill-svg hill-2" viewBox="0 0 1440 320" preserveAspectRatio="none">
+        <path d="M0,160L60,176C120,192,240,224,360,229.3C480,235,600,213,720,186.7C840,160,960,128,1080,133.3C1200,139,1320,181,1380,202.7L1440,224L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"></path>
+      </svg>
+      <svg class="hill-svg hill-3" viewBox="0 0 1440 320" preserveAspectRatio="none">
+        <path d="M0,256L120,245.3C240,235,480,213,720,218.7C960,224,1200,256,1320,272L1440,288L1440,320L1320,320C1200,320,960,320,720,320C480,320,240,320,120,320L0,320Z"></path>
+      </svg>
+    </div>
+
+    <!-- Particle Containers -->
+    <div id="snow-container"></div>
+    <div id="butterflies-container"></div>
+
+    <!-- UI Elements -->
+    <div class="garden-content">
+      <h1 id="greeting"></h1>
+      
+      <!-- Elegant Thin Timer -->
+      <div class="timer-container" id="timer">10</div>
+    </div>
+  </div>
+
+  <!-- 4. Video Screen -->
+  <div id="video-screen">
+    <video id="final-video">
+      <source src="./assets/horrorvideo.mp4" type="video/mp4">
+      Your browser does not support HTML video.
+    </video>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      
+      const form = document.getElementById("name-form");
+      const whiteLight = document.getElementById("white-light");
+      const glassContainer = document.getElementById("glass-container");
+      const gardenScreen = document.getElementById("garden-screen");
+      const videoScreen = document.getElementById("video-screen");
+      
+      const snowContainer = document.getElementById("snow-container");
+      const butterfliesContainer = document.getElementById("butterflies-container");
+      
+      const greetingText = document.getElementById("greeting");
+      const timerDisplay = document.getElementById("timer");
+      const finalVideo = document.getElementById("final-video");
+      const bubbleWrapper = document.querySelector(".bubble-wrapper");
+      const bgMusic = document.getElementById("bg-music");
+
+      // Keep final video unmuted and at full in-player volume.
+      function enforceVideoVolume() {
+        finalVideo.muted = false;
+        if (finalVideo.volume !== 1) {
+          finalVideo.volume = 1;
+        }
+      }
+
+      enforceVideoVolume();
+      finalVideo.addEventListener("loadedmetadata", enforceVideoVolume);
+      finalVideo.addEventListener("volumechange", enforceVideoVolume);
+
+      // Keep background music loud and start it 3s ahead on first playback.
+      bgMusic.volume = 1;
+      const setMusicStartOffset = () => {
+        if (bgMusic.duration > 3) {
+          bgMusic.currentTime = 3;
+        }
+      };
+      bgMusic.addEventListener("loadedmetadata", setMusicStartOffset);
+      if (bgMusic.readyState >= 1) {
+        setMusicStartOffset();
+      }
+
+      function ensureBackgroundMusic() {
+        if (bgMusic.paused) {
+          bgMusic.play().catch(() => {});
+        }
+      }
+
+      ensureBackgroundMusic();
+
+      // Generate Magical Elements
+      function createMagicGarden() {
+        // 1. Generate Snowflakes with Parallax Depth (Kuch blur, kuch sharp)
+        for (let i = 0; i < 150; i++) {
+          let snowflake = document.createElement("div");
+          snowflake.classList.add("snowflake");
+          
+          let size = Math.random() * 4 + 2; // 2px to 6px
+          snowflake.style.width = `${size}px`;
+          snowflake.style.height = `${size}px`;
+          snowflake.style.left = `${Math.random() * 100}vw`;
+          
+          // Add blur to some snowflakes for realistic 3D depth
+          if (Math.random() > 0.6) {
+            snowflake.style.filter = "blur(2px)";
+            snowflake.style.zIndex = "5"; // Bring blurry ones to front
+            size += 3; // Make blurry ones slightly larger
+            snowflake.style.width = `${size}px`;
+            snowflake.style.height = `${size}px`;
+          }
+
+          // Speed and delay
+          snowflake.style.animationDuration = `${Math.random() * 6 + 6}s`; 
+          snowflake.style.animationDelay = `-${Math.random() * 15}s`; 
+          
+          snowContainer.appendChild(snowflake);
+        }
+
+        // 2. Generate Random Colored Butterflies (Titliyan)
+        const butterflyColors = [
+          'linear-gradient(135deg, #00C9FF, #92FE9D)', // Cyan-Mint
+          'linear-gradient(135deg, #f857a6, #ff5858)', // Pink-Red
+          'linear-gradient(135deg, #8E2DE2, #4A00E0)', // Deep Purple
+          'linear-gradient(135deg, #FF416C, #FF4B2B)', // Fiery Orange
+          'linear-gradient(135deg, #FDC830, #F37335)', // Golden Yellow
+          'linear-gradient(135deg, #00c6ff, #0072ff)', // Bright Blue
+          'linear-gradient(135deg, #ECE9E6, #FFFFFF)'  // Silver White
+        ];
+
+        for (let i = 0; i < 7; i++) {
+          let butterfly = document.createElement("div");
+          butterfly.classList.add("butterfly-box");
+          
+          let leftWing = document.createElement("div");
+          leftWing.classList.add("wing");
+          let rightWing = document.createElement("div");
+          rightWing.classList.add("wing", "right");
+          
+          // Apply random color gradient to this butterfly
+          let randomGradient = butterflyColors[Math.floor(Math.random() * butterflyColors.length)];
+          leftWing.style.background = randomGradient;
+          rightWing.style.background = randomGradient;
+
+          // Add a matching glow/shadow based on the butterfly's wings
+          butterfly.style.filter = `drop-shadow(0 0 12px rgba(255, 255, 255, 0.6))`;
+          
+          butterfly.appendChild(leftWing);
+          butterfly.appendChild(rightWing);
+          
+          // Random positions on screen
+          butterfly.style.left = `${Math.random() * 80 + 5}vw`;
+          butterfly.style.top = `${Math.random() * 60 + 10}vh`;
+          
+          // Randomize scale/size for realism
+          let scale = Math.random() * 0.5 + 0.5; // Scale between 0.5 and 1.0
+
+          // Create unique dynamic flight path for EACH butterfly
+          let styleSheet = document.createElement("style");
+          let animName = `fly-${i}`;
+          
+          // Generate completely random waypoints for natural hovering
+          let x1 = Math.random() * 300 - 150; let y1 = Math.random() * -200 - 50;
+          let x2 = Math.random() * 500 - 250; let y2 = Math.random() * 100 - 100;
+          let x3 = Math.random() * 300 - 150; let y3 = Math.random() * -200 - 100;
+
+          let keyframes = `
+            @keyframes ${animName} {
+              0% { transform: translate(0, 0) scale(${scale}) rotate(${Math.random()*20-10}deg); }
+              25% { transform: translate(${x1}px, ${y1}px) scale(${scale}) rotate(${Math.random()*40-20}deg); }
+              50% { transform: translate(${x2}px, ${y2}px) scale(${scale}) rotate(${Math.random()*40-20}deg); }
+              75% { transform: translate(${x3}px, ${y3}px) scale(${scale}) rotate(${Math.random()*40-20}deg); }
+              100% { transform: translate(0, 0) scale(${scale}) rotate(${Math.random()*20-10}deg); }
+            }
+          `;
+          styleSheet.innerText = keyframes;
+          document.head.appendChild(styleSheet);
+
+          // Apply unique flight speed and animation
+          butterfly.style.animation = `${animName} ${Math.random() * 15 + 15}s infinite ease-in-out`;
+          leftWing.style.animationDuration = `${Math.random() * 0.05 + 0.1}s`;
+          rightWing.style.animationDuration = leftWing.style.animationDuration;
+          
+          butterfliesContainer.appendChild(butterfly);
+        }
+      }
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        ensureBackgroundMusic();
+        
+        const userName = document.getElementById("user-name").value.trim();
+
+        // 1. Trigger Slow White Light Flash
+        whiteLight.style.opacity = "1";
+
+        // 2. Scene Change jab light poori white ho jaye (2.5 seconds)
+        setTimeout(() => {
+          
+          // Original bubbles aur form hide
+          glassContainer.style.display = "none";
+          if (bubbleWrapper) bubbleWrapper.style.display = "none";
+
+          // Generate elements
+          createMagicGarden();
+
+          // Screen show
+          gardenScreen.style.display = "block";
+
+          // Fade effect trigger
+          void gardenScreen.offsetWidth; 
+          gardenScreen.style.opacity = "1";
+
+          // Text set karo
+          greetingText.innerText = `Surprise is loading in...`;
+          
+          // Light fade out
+          whiteLight.style.opacity = "0";
+
+          // Texts animation
+          setTimeout(() => {
+            greetingText.style.opacity = "1";
+            greetingText.style.transform = "translateY(0)";
+          }, 600);
+
+          // Timer Start
+          startTimer();
+
+        }, 2000); 
+      });
+
+      function startTimer() {
+        let timeLeft = 15;
+        
+        function tick() {
+          timerDisplay.innerText = timeLeft;
+
+          if (timeLeft <= 0) {
+            transitionToVideo();
+            return;
+          }
+
+          const isLastFiveSeconds = timeLeft <= 5;
+          let delay = 1000;
+
+          // Last 5 seconds me countdown intentionally slow ho jata hai.
+          if (isLastFiveSeconds) {
+            delay = 3000;
+            timerDisplay.classList.add("slow-pulse");
+          } else {
+            timerDisplay.classList.remove("slow-pulse");
+          }
+
+          timeLeft--;
+
+          setTimeout(tick, delay);
+        }
+
+        setTimeout(tick, 1000);
+      }
+
+      function transitionToVideo() {
+        // Garden ke baad next screen instant show.
+        gardenScreen.style.transition = "none";
+        videoScreen.style.transition = "none";
+        gardenScreen.style.opacity = "0";
+        gardenScreen.style.display = "none";
+
+        videoScreen.style.display = "block";
+        videoScreen.style.opacity = "1";
+
+        // Play video
+        enforceVideoVolume();
+        finalVideo.play();
+      }
+    });
+  </script>
+
+</body>
+</html>
